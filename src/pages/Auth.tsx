@@ -84,7 +84,7 @@ const Auth = () => {
         } else {
           toast({
             title: "Account Created!",
-            description: "Welcome to Flashcard AI.",
+            description: "Welcome to Ethiocard AI.",
           });
         }
       }
