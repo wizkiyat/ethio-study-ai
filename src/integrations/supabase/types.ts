@@ -84,11 +84,52 @@ export type Database = {
           },
         ]
       }
+      premium_requests: {
+        Row: {
+          admin_notes: string | null
+          created_at: string
+          email: string
+          id: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          screenshot_url: string
+          status: string
+          user_id: string
+          username: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          created_at?: string
+          email: string
+          id?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          screenshot_url: string
+          status?: string
+          user_id: string
+          username: string
+        }
+        Update: {
+          admin_notes?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          screenshot_url?: string
+          status?: string
+          user_id?: string
+          username?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
           email: string
           id: string
+          is_premium: boolean | null
+          premium_expires_at: string | null
           updated_at: string
           username: string
         }
@@ -96,6 +137,8 @@ export type Database = {
           created_at?: string
           email: string
           id: string
+          is_premium?: boolean | null
+          premium_expires_at?: string | null
           updated_at?: string
           username: string
         }
@@ -103,10 +146,41 @@ export type Database = {
           created_at?: string
           email?: string
           id?: string
+          is_premium?: boolean | null
+          premium_expires_at?: string | null
           updated_at?: string
           username?: string
         }
         Relationships: []
+      }
+      quizzes: {
+        Row: {
+          created_at: string
+          id: string
+          questions: Json
+          set_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          questions?: Json
+          set_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          questions?: Json
+          set_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quizzes_set_id_fkey"
+            columns: ["set_id"]
+            isOneToOne: false
+            referencedRelation: "flashcard_sets"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       uploads: {
         Row: {
