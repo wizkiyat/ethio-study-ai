@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowLeft, ChevronLeft, ChevronRight, RotateCw } from "lucide-react";
+import { ArrowLeft, ChevronLeft, ChevronRight, RotateCw, Brain } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface Flashcard {
@@ -194,6 +194,17 @@ const Study = () => {
             >
               Next
               <ChevronRight className="w-4 h-4 ml-2" />
+            </Button>
+          </div>
+
+          {/* Take Quiz Button */}
+          <div className="text-center pt-4">
+            <Button
+              onClick={() => navigate(`/quiz/${setId}`)}
+              className="gap-2"
+            >
+              <Brain className="w-4 h-4" />
+              Take Quiz
             </Button>
           </div>
         </div>

@@ -2,9 +2,10 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { User } from "@supabase/supabase-js";
-import { Upload, BookOpen, LogOut } from "lucide-react";
+import { Upload, BookOpen, LogOut, Crown, Shield, Brain } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface FlashcardSet {
@@ -19,6 +20,8 @@ const Dashboard = () => {
   const [user, setUser] = useState<User | null>(null);
   const [sets, setSets] = useState<FlashcardSet[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isPremium, setIsPremium] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -30,6 +33,7 @@ const Dashboard = () => {
       } else {
         setUser(session.user);
         loadFlashcardSets(session.user.id);
+        checkUserStatus(session.user.id);
       }
     });
 
@@ -45,6 +49,31 @@ const Dashboard = () => {
 
     return () => subscription.unsubscribe();
   }, [navigate]);
+
+  const checkUserStatus = async (userId: string) => {
+    // Check premium status
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("is_premium")
+      .eq("id", userId)
+      .single();
+    
+    if (profile) {
+      setIsPremium(profile.is_premium || false);
+    }
+
+    // Check admin status
+    const { data: roles } = await supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", userId)
+      .eq("role", "admin");
+    
+    if (roles && roles.length > 0) {
+      setIsAdmin(true);
+      setIsPremium(true); // Admin always has premium
+    }
+  };
 
   const loadFlashcardSets = async (userId: string) => {
     try {
@@ -85,11 +114,39 @@ const Dashboard = () => {
       {/* Header */}
       <header className="border-b border-border bg-card/50 backdrop-blur">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-primary">Ethiocard AI</h1>
-          <Button variant="outline" onClick={handleSignOut}>
-            <LogOut className="w-4 h-4 mr-2" />
-            Sign Out
-          </Button>
+          <div className="flex items-center gap-3">
+            <h1 className="text-2xl font-bold text-primary">Ethiocard AI</h1>
+            {isPremium && (
+              <Badge className="gap-1">
+                <Crown className="w-3 h-3" />
+                Premium
+              </Badge>
+            )}
+            {isAdmin && (
+              <Badge variant="secondary" className="gap-1">
+                <Shield className="w-3 h-3" />
+                Admin
+              </Badge>
+            )}
+          </div>
+          <div className="flex items-center gap-2">
+            {isAdmin && (
+              <Button variant="outline" onClick={() => navigate("/admin")}>
+                <Shield className="w-4 h-4 mr-2" />
+                Admin Panel
+              </Button>
+            )}
+            {!isPremium && (
+              <Button variant="outline" onClick={() => navigate("/premium")}>
+                <Crown className="w-4 h-4 mr-2" />
+                Get Premium
+              </Button>
+            )}
+            <Button variant="outline" onClick={handleSignOut}>
+              <LogOut className="w-4 h-4 mr-2" />
+              Sign Out
+            </Button>
+          </div>
         </div>
       </header>
 
@@ -135,8 +192,7 @@ const Dashboard = () => {
               {sets.map((set) => (
                 <Card
                   key={set.id}
-                  className="p-6 hover:shadow-[var(--shadow-elevated)] transition-shadow cursor-pointer"
-                  onClick={() => navigate(`/study/${set.id}`)}
+                  className="p-6 hover:shadow-[var(--shadow-elevated)] transition-shadow"
                 >
                   <h3 className="text-lg font-semibold mb-2 line-clamp-2">
                     {set.title}
@@ -146,13 +202,32 @@ const Dashboard = () => {
                       {set.description}
                     </p>
                   )}
-                  <div className="flex items-center justify-between text-sm">
+                  <div className="flex items-center justify-between text-sm mb-4">
                     <span className="text-muted-foreground">
                       {set.flashcards[0]?.count || 0} cards
                     </span>
                     <span className="text-xs text-muted-foreground">
                       {new Date(set.created_at).toLocaleDateString()}
                     </span>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="flex-1"
+                      onClick={() => navigate(`/study/${set.id}`)}
+                    >
+                      <BookOpen className="w-4 h-4 mr-1" />
+                      Study
+                    </Button>
+                    <Button
+                      size="sm"
+                      className="flex-1"
+                      onClick={() => navigate(`/quiz/${set.id}`)}
+                    >
+                      <Brain className="w-4 h-4 mr-1" />
+                      Quiz
+                    </Button>
                   </div>
                 </Card>
               ))}
