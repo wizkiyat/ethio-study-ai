@@ -7,14 +7,19 @@ import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { supabase } from "@/integrations/supabase/client";
 import { User } from "@supabase/supabase-js";
-import { Upload as UploadIcon, ArrowLeft, FileText } from "lucide-react";
+import { Upload as UploadIcon, ArrowLeft, FileText, Crown, AlertCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+
+const FREE_UPLOAD_LIMIT = 6;
 
 const Upload = () => {
   const [user, setUser] = useState<User | null>(null);
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [isPremium, setIsPremium] = useState(false);
+  const [uploadCount, setUploadCount] = useState(0);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -24,6 +29,7 @@ const Upload = () => {
         navigate("/auth");
       } else {
         setUser(session.user);
+        checkUserStatusAndUploads(session.user.id);
       }
     });
 
@@ -33,12 +39,42 @@ const Upload = () => {
           navigate("/auth");
         } else {
           setUser(session.user);
+          checkUserStatusAndUploads(session.user.id);
         }
       }
     );
 
     return () => subscription.unsubscribe();
   }, [navigate]);
+
+  const checkUserStatusAndUploads = async (userId: string) => {
+    setLoading(true);
+    try {
+      // Check premium status
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('is_premium')
+        .eq('id', userId)
+        .maybeSingle();
+
+      setIsPremium(profile?.is_premium || false);
+
+      // Count user's uploads
+      const { count } = await supabase
+        .from('uploads')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', userId);
+
+      setUploadCount(count || 0);
+    } catch (error) {
+      console.error('Error checking user status:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const hasReachedLimit = !isPremium && uploadCount >= FREE_UPLOAD_LIMIT;
+  const remainingUploads = FREE_UPLOAD_LIMIT - uploadCount;
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -69,6 +105,16 @@ const Upload = () => {
 
   const handleUpload = async () => {
     if (!file || !user) return;
+
+    // Double-check limit before upload
+    if (hasReachedLimit) {
+      toast({
+        title: "Upload Limit Reached",
+        description: "Upgrade to Premium for unlimited uploads!",
+        variant: "destructive",
+      });
+      return;
+    }
 
     setUploading(true);
     setProgress(10);
@@ -150,7 +196,7 @@ const Upload = () => {
     }
   };
 
-  if (!user) return null;
+  if (!user || loading) return null;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-secondary">
@@ -171,6 +217,56 @@ const Upload = () => {
         <Card className="max-w-2xl mx-auto p-8 shadow-[var(--shadow-elevated)]">
           <h2 className="text-3xl font-bold mb-6">Upload Your Files</h2>
           
+          {/* Upload limit info for free users */}
+          {!isPremium && (
+            <Card className={`p-4 mb-6 ${hasReachedLimit ? 'bg-destructive/10 border-destructive' : 'bg-secondary/50'}`}>
+              <div className="flex items-start gap-3">
+                {hasReachedLimit ? (
+                  <AlertCircle className="w-5 h-5 text-destructive mt-0.5" />
+                ) : (
+                  <Crown className="w-5 h-5 text-amber-500 mt-0.5" />
+                )}
+                <div className="flex-1">
+                  {hasReachedLimit ? (
+                    <>
+                      <p className="font-medium text-destructive">Upload Limit Reached</p>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        You've used all {FREE_UPLOAD_LIMIT} free uploads. Upgrade to Premium for unlimited uploads!
+                      </p>
+                      <Button
+                        variant="default"
+                        size="sm"
+                        className="mt-3"
+                        onClick={() => navigate('/premium')}
+                      >
+                        <Crown className="w-4 h-4 mr-2" />
+                        Upgrade to Premium
+                      </Button>
+                    </>
+                  ) : (
+                    <>
+                      <p className="font-medium">Free Plan: {remainingUploads} uploads remaining</p>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        You've used {uploadCount} of {FREE_UPLOAD_LIMIT} free uploads. Upgrade to Premium for unlimited uploads.
+                      </p>
+                    </>
+                  )}
+                </div>
+              </div>
+            </Card>
+          )}
+
+          {isPremium && (
+            <Card className="p-4 mb-6 bg-amber-500/10 border-amber-500/30">
+              <div className="flex items-center gap-3">
+                <Crown className="w-5 h-5 text-amber-500" />
+                <p className="font-medium text-amber-600 dark:text-amber-400">
+                  Premium Member - Unlimited Uploads
+                </p>
+              </div>
+            </Card>
+          )}
+          
           <div className="space-y-6">
             <div>
               <Label htmlFor="file" className="text-base mb-2 block">
@@ -181,7 +277,7 @@ const Upload = () => {
                 type="file"
                 accept=".pdf,.png,.jpg,.jpeg"
                 onChange={handleFileChange}
-                disabled={uploading}
+                disabled={uploading || hasReachedLimit}
               />
               <p className="text-sm text-muted-foreground mt-2">
                 Supported formats: PDF, PNG, JPEG (max 20MB)
@@ -215,7 +311,7 @@ const Upload = () => {
               size="lg"
               className="w-full"
               onClick={handleUpload}
-              disabled={!file || uploading}
+              disabled={!file || uploading || hasReachedLimit}
             >
               <UploadIcon className="w-5 h-5 mr-2" />
               {uploading ? "Processing..." : "Generate Flashcards"}
