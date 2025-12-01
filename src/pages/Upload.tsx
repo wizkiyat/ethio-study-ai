@@ -272,16 +272,32 @@ const Upload = () => {
               <Label htmlFor="file" className="text-base mb-2 block">
                 Select File
               </Label>
-              <Input
-                id="file"
-                type="file"
-                accept=".pdf,.png,.jpg,.jpeg"
-                onChange={handleFileChange}
-                disabled={uploading || hasReachedLimit}
-              />
-              <p className="text-sm text-muted-foreground mt-2">
-                Supported formats: PDF, PNG, JPEG (max 20MB)
-              </p>
+              <label
+                htmlFor="file"
+                className={`flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer transition-colors ${
+                  hasReachedLimit || uploading
+                    ? 'border-muted bg-muted/20 cursor-not-allowed'
+                    : 'border-primary/30 bg-secondary/30 hover:bg-secondary/50 hover:border-primary/50'
+                }`}
+              >
+                <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                  <UploadIcon className={`w-8 h-8 mb-2 ${hasReachedLimit ? 'text-muted-foreground' : 'text-primary'}`} />
+                  <p className="text-sm text-muted-foreground">
+                    <span className="font-semibold">Click to upload</span> or drag and drop
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    PDF, PNG, JPEG (max 20MB)
+                  </p>
+                </div>
+                <input
+                  id="file"
+                  type="file"
+                  accept=".pdf,.png,.jpg,.jpeg"
+                  onChange={handleFileChange}
+                  disabled={uploading || hasReachedLimit}
+                  className="hidden"
+                />
+              </label>
             </div>
 
             {file && (
