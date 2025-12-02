@@ -79,8 +79,8 @@ const Upload = () => {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const selectedFile = e.target.files[0];
-      const validTypes = ['application/pdf', 'image/png', 'image/jpeg', 'image/jpg'];
-      
+      const validTypes = ['application/pdf', 'application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation', 'image/png', 'image/jpeg', 'image/jpg'];
+
       if (!validTypes.includes(selectedFile.type)) {
         toast({
           title: "Invalid File Type",
