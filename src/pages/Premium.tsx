@@ -153,20 +153,21 @@ const Premium = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-secondary">
       <header className="border-b border-border bg-card/50 backdrop-blur">
-        <div className="container mx-auto px-4 py-4">
-          <Button variant="ghost" onClick={() => navigate("/dashboard")} className="gap-2">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
+          <Button variant="ghost" size="sm" onClick={() => navigate("/dashboard")} className="gap-2">
             <ArrowLeft className="w-4 h-4" />
-            Back to Dashboard
+            <span className="hidden sm:inline">Back to Dashboard</span>
+            <span className="sm:hidden">Back</span>
           </Button>
         </div>
       </header>
 
-      <div className="container mx-auto px-4 py-12">
-        <div className="max-w-2xl mx-auto space-y-8">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+        <div className="max-w-2xl mx-auto space-y-6 sm:space-y-8">
           <div className="text-center">
-            <Crown className="w-16 h-16 mx-auto text-primary mb-4" />
-            <h1 className="text-4xl font-bold mb-2">Premium Access</h1>
-            <p className="text-muted-foreground">
+            <Crown className="w-12 h-12 sm:w-16 sm:h-16 mx-auto text-primary mb-3 sm:mb-4" />
+            <h1 className="text-3xl sm:text-4xl font-bold mb-2">Premium Access</h1>
+            <p className="text-sm sm:text-base text-muted-foreground">
               Unlock unlimited flashcard generation and Memory Mode
             </p>
           </div>
