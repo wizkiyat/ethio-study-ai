@@ -201,21 +201,23 @@ const Upload = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-secondary">
       <header className="border-b border-border bg-card/50 backdrop-blur">
-        <div className="container mx-auto px-4 py-4">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
           <Button
             variant="ghost"
+            size="sm"
             onClick={() => navigate("/dashboard")}
             className="gap-2"
           >
             <ArrowLeft className="w-4 h-4" />
-            Back to Dashboard
+            <span className="hidden sm:inline">Back to Dashboard</span>
+            <span className="sm:hidden">Back</span>
           </Button>
         </div>
       </header>
 
-      <div className="container mx-auto px-4 py-12">
-        <Card className="max-w-2xl mx-auto p-8 shadow-[var(--shadow-elevated)]">
-          <h2 className="text-3xl font-bold mb-6">Upload Your Files</h2>
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 md:py-12">
+        <Card className="max-w-2xl mx-auto p-4 sm:p-6 md:p-8 shadow-[var(--shadow-elevated)]">
+          <h2 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6">Upload Your Files</h2>
           
           {/* Upload limit info for free users */}
           {!isPremium && (

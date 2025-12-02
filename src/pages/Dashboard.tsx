@@ -113,59 +113,61 @@ const Dashboard = () => {
     <div className="min-h-screen bg-gradient-to-b from-background to-secondary">
       {/* Header */}
       <header className="border-b border-border bg-card/50 backdrop-blur">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-bold text-primary">Ethiocard AI</h1>
-            {isPremium && (
-              <Badge className="gap-1">
-                <Crown className="w-3 h-3" />
-                Premium
-              </Badge>
-            )}
-            {isAdmin && (
-              <Badge variant="secondary" className="gap-1">
-                <Shield className="w-3 h-3" />
-                Admin
-              </Badge>
-            )}
-          </div>
-          <div className="flex items-center gap-2">
-            {isAdmin && (
-              <Button variant="outline" onClick={() => navigate("/admin")}>
-                <Shield className="w-4 h-4 mr-2" />
-                Admin Panel
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <h1 className="text-xl sm:text-2xl font-bold text-primary">Ethiocard AI</h1>
+              {isPremium && (
+                <Badge className="gap-1 text-xs">
+                  <Crown className="w-3 h-3" />
+                  Premium
+                </Badge>
+              )}
+              {isAdmin && (
+                <Badge variant="secondary" className="gap-1 text-xs">
+                  <Shield className="w-3 h-3" />
+                  Admin
+                </Badge>
+              )}
+            </div>
+            <div className="flex items-center gap-2 w-full sm:w-auto">
+              {isAdmin && (
+                <Button variant="outline" size="sm" onClick={() => navigate("/admin")} className="flex-1 sm:flex-none">
+                  <Shield className="w-4 h-4 sm:mr-2" />
+                  <span className="hidden sm:inline">Admin Panel</span>
+                </Button>
+              )}
+              {!isPremium && (
+                <Button variant="outline" size="sm" onClick={() => navigate("/premium")} className="flex-1 sm:flex-none">
+                  <Crown className="w-4 h-4 sm:mr-2" />
+                  <span className="hidden sm:inline">Get Premium</span>
+                </Button>
+              )}
+              <Button variant="outline" size="sm" onClick={handleSignOut} className="flex-1 sm:flex-none">
+                <LogOut className="w-4 h-4 sm:mr-2" />
+                <span className="hidden sm:inline">Sign Out</span>
               </Button>
-            )}
-            {!isPremium && (
-              <Button variant="outline" onClick={() => navigate("/premium")}>
-                <Crown className="w-4 h-4 mr-2" />
-                Get Premium
-              </Button>
-            )}
-            <Button variant="outline" onClick={handleSignOut}>
-              <LogOut className="w-4 h-4 mr-2" />
-              Sign Out
-            </Button>
+            </div>
           </div>
         </div>
       </header>
 
-      <div className="container mx-auto px-4 py-12">
-        <div className="max-w-5xl mx-auto space-y-8">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+        <div className="max-w-5xl mx-auto space-y-6 sm:space-y-8">
           {/* Welcome Section */}
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0">
             <div>
-              <h2 className="text-3xl font-bold mb-2">Your Flashcard Sets</h2>
-              <p className="text-muted-foreground">
+              <h2 className="text-2xl sm:text-3xl font-bold mb-2">Your Flashcard Sets</h2>
+              <p className="text-sm sm:text-base text-muted-foreground">
                 Create new sets or review existing ones
               </p>
             </div>
             <Button
               size="lg"
               onClick={() => navigate("/upload")}
-              className="gap-2"
+              className="gap-2 w-full sm:w-auto"
             >
-              <Upload className="w-5 h-5" />
+              <Upload className="w-4 h-4 sm:w-5 sm:h-5" />
               Upload Files
             </Button>
           </div>
@@ -188,7 +190,7 @@ const Dashboard = () => {
               </Button>
             </Card>
           ) : (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
               {sets.map((set) => (
                 <Card
                   key={set.id}

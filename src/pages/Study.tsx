@@ -111,34 +111,36 @@ const Study = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-secondary">
       <header className="border-b border-border bg-card/50 backdrop-blur">
-        <div className="container mx-auto px-4 py-4">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
           <Button
             variant="ghost"
+            size="sm"
             onClick={() => navigate("/dashboard")}
             className="gap-2"
           >
             <ArrowLeft className="w-4 h-4" />
-            Back to Dashboard
+            <span className="hidden sm:inline">Back to Dashboard</span>
+            <span className="sm:hidden">Back</span>
           </Button>
         </div>
       </header>
 
-      <div className="container mx-auto px-4 py-12">
-        <div className="max-w-3xl mx-auto space-y-6">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 md:py-12">
+        <div className="max-w-3xl mx-auto space-y-4 sm:space-y-6">
           {/* Header */}
           <div className="text-center">
-            <h1 className="text-3xl font-bold mb-2">{set.title}</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold mb-2">{set.title}</h1>
             {set.description && (
-              <p className="text-muted-foreground">{set.description}</p>
+              <p className="text-sm sm:text-base text-muted-foreground">{set.description}</p>
             )}
-            <p className="text-sm text-muted-foreground mt-4">
+            <p className="text-xs sm:text-sm text-muted-foreground mt-3 sm:mt-4">
               Card {currentIndex + 1} of {flashcards.length}
             </p>
           </div>
 
           {/* Flashcard */}
           <div
-            className="relative h-96 cursor-pointer perspective-1000"
+            className="relative h-64 sm:h-80 md:h-96 cursor-pointer perspective-1000"
             onClick={handleFlip}
           >
             <div
@@ -148,60 +150,65 @@ const Study = () => {
             >
               {/* Front */}
               <Card
-                className={`absolute inset-0 p-8 flex flex-col items-center justify-center text-center shadow-[var(--shadow-elevated)] backface-hidden ${
+                className={`absolute inset-0 p-6 sm:p-8 flex flex-col items-center justify-center text-center shadow-[var(--shadow-elevated)] backface-hidden ${
                   isFlipped ? "invisible" : "visible"
                 }`}
               >
-                <p className="text-sm text-muted-foreground mb-4">QUESTION</p>
-                <p className="text-2xl font-medium">{currentCard.question}</p>
-                <p className="text-sm text-muted-foreground mt-8">
+                <p className="text-xs sm:text-sm text-muted-foreground mb-3 sm:mb-4">QUESTION</p>
+                <p className="text-lg sm:text-xl md:text-2xl font-medium px-4">{currentCard.question}</p>
+                <p className="text-xs sm:text-sm text-muted-foreground mt-6 sm:mt-8">
                   Click to reveal answer
                 </p>
               </Card>
 
               {/* Back */}
               <Card
-                className={`absolute inset-0 p-8 flex flex-col items-center justify-center text-center shadow-[var(--shadow-elevated)] rotate-y-180 backface-hidden ${
+                className={`absolute inset-0 p-6 sm:p-8 flex flex-col items-center justify-center text-center shadow-[var(--shadow-elevated)] rotate-y-180 backface-hidden ${
                   isFlipped ? "visible" : "invisible"
                 }`}
               >
-                <p className="text-sm text-muted-foreground mb-4">ANSWER</p>
-                <p className="text-2xl font-medium">{currentCard.answer}</p>
+                <p className="text-xs sm:text-sm text-muted-foreground mb-3 sm:mb-4">ANSWER</p>
+                <p className="text-lg sm:text-xl md:text-2xl font-medium px-4">{currentCard.answer}</p>
               </Card>
             </div>
           </div>
 
           {/* Controls */}
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between gap-2 sm:gap-4">
             <Button
               variant="outline"
+              size="sm"
               onClick={handlePrevious}
               disabled={currentIndex === 0}
+              className="flex-1 sm:flex-none"
             >
-              <ChevronLeft className="w-4 h-4 mr-2" />
-              Previous
+              <ChevronLeft className="w-4 h-4 sm:mr-2" />
+              <span className="hidden sm:inline">Previous</span>
             </Button>
 
-            <Button variant="outline" onClick={handleFlip}>
-              <RotateCw className="w-4 h-4 mr-2" />
-              Flip Card
+            <Button variant="outline" size="sm" onClick={handleFlip} className="flex-1 sm:flex-none">
+              <RotateCw className="w-4 h-4 sm:mr-2" />
+              <span className="hidden sm:inline">Flip Card</span>
             </Button>
 
             <Button
               variant="outline"
+              size="sm"
               onClick={handleNext}
               disabled={currentIndex === flashcards.length - 1}
+              className="flex-1 sm:flex-none"
             >
-              Next
-              <ChevronRight className="w-4 h-4 ml-2" />
+              <span className="hidden sm:inline">Next</span>
+              <ChevronRight className="w-4 h-4 sm:ml-2" />
             </Button>
           </div>
 
           {/* Take Quiz Button */}
-          <div className="text-center pt-4">
+          <div className="text-center pt-2 sm:pt-4">
             <Button
               onClick={() => navigate(`/quiz/${setId}`)}
-              className="gap-2"
+              className="gap-2 w-full sm:w-auto"
+              size="sm"
             >
               <Brain className="w-4 h-4" />
               Take Quiz

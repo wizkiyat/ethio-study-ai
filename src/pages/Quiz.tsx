@@ -154,33 +154,34 @@ const Quiz = () => {
     return (
       <div className="min-h-screen bg-gradient-to-b from-background to-secondary">
         <header className="border-b border-border bg-card/50 backdrop-blur">
-          <div className="container mx-auto px-4 py-4">
-            <Button variant="ghost" onClick={() => navigate("/dashboard")} className="gap-2">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
+            <Button variant="ghost" size="sm" onClick={() => navigate("/dashboard")} className="gap-2">
               <ArrowLeft className="w-4 h-4" />
-              Back to Dashboard
+              <span className="hidden sm:inline">Back to Dashboard</span>
+              <span className="sm:hidden">Back</span>
             </Button>
           </div>
         </header>
 
-        <div className="container mx-auto px-4 py-12">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
           <Card className="max-w-2xl mx-auto">
-            <CardContent className="pt-8 text-center space-y-6">
-              <Trophy className={`w-20 h-20 mx-auto ${percentage >= 70 ? "text-yellow-500" : "text-muted-foreground"}`} />
-              <h1 className="text-3xl font-bold">Quiz Complete!</h1>
+            <CardContent className="pt-6 sm:pt-8 text-center space-y-4 sm:space-y-6">
+              <Trophy className={`w-16 h-16 sm:w-20 sm:h-20 mx-auto ${percentage >= 70 ? "text-yellow-500" : "text-muted-foreground"}`} />
+              <h1 className="text-2xl sm:text-3xl font-bold">Quiz Complete!</h1>
               <div className="space-y-2">
-                <p className="text-5xl font-bold text-primary">{percentage}%</p>
-                <p className="text-muted-foreground">
+                <p className="text-4xl sm:text-5xl font-bold text-primary">{percentage}%</p>
+                <p className="text-sm sm:text-base text-muted-foreground">
                   You got {score} out of {questions.length} correct
                 </p>
               </div>
               <div className="space-y-2">
-                {percentage >= 90 && <p className="text-green-500 font-medium">Excellent! You've mastered this material!</p>}
-                {percentage >= 70 && percentage < 90 && <p className="text-primary font-medium">Great job! Keep practicing!</p>}
-                {percentage < 70 && <p className="text-yellow-500 font-medium">Keep studying! You'll get there!</p>}
+                {percentage >= 90 && <p className="text-sm sm:text-base text-green-500 font-medium">Excellent! You've mastered this material!</p>}
+                {percentage >= 70 && percentage < 90 && <p className="text-sm sm:text-base text-primary font-medium">Great job! Keep practicing!</p>}
+                {percentage < 70 && <p className="text-sm sm:text-base text-yellow-500 font-medium">Keep studying! You'll get there!</p>}
               </div>
-              <div className="flex gap-4 justify-center">
-                <Button onClick={restartQuiz}>Try Again</Button>
-                <Button variant="outline" onClick={() => navigate(`/study/${setId}`)}>
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
+                <Button onClick={restartQuiz} className="w-full sm:w-auto">Try Again</Button>
+                <Button variant="outline" onClick={() => navigate(`/study/${setId}`)} className="w-full sm:w-auto">
                   Study Cards
                 </Button>
               </div>
@@ -197,31 +198,31 @@ const Quiz = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-secondary">
       <header className="border-b border-border bg-card/50 backdrop-blur">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <Button variant="ghost" onClick={() => navigate("/dashboard")} className="gap-2">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0">
+          <Button variant="ghost" size="sm" onClick={() => navigate("/dashboard")} className="gap-2">
             <ArrowLeft className="w-4 h-4" />
-            Back
+            <span className="hidden sm:inline">Back</span>
           </Button>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-xs sm:text-sm text-muted-foreground">
             Question {currentQuestion + 1} of {questions.length}
           </p>
         </div>
       </header>
 
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-2xl mx-auto space-y-6">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        <div className="max-w-2xl mx-auto space-y-4 sm:space-y-6">
           <div className="space-y-2">
-            <h1 className="text-2xl font-bold">{setTitle} - Quiz</h1>
+            <h1 className="text-xl sm:text-2xl font-bold">{setTitle} - Quiz</h1>
             <Progress value={progress} className="h-2" />
           </div>
 
           <Card>
             <CardHeader>
-              <CardTitle className="text-xl">{question.question}</CardTitle>
+              <CardTitle className="text-lg sm:text-xl">{question.question}</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-3">
+            <CardContent className="space-y-2 sm:space-y-3">
               {question.options.map((option, index) => {
-                let buttonClass = "w-full justify-start text-left h-auto py-4 px-4";
+                let buttonClass = "w-full justify-start text-left h-auto py-3 sm:py-4 px-3 sm:px-4";
                 
                 if (showResult) {
                   if (index === question.correctAnswer) {
@@ -239,16 +240,16 @@ const Quiz = () => {
                     onClick={() => handleAnswer(index)}
                     disabled={answered}
                   >
-                    <span className="flex items-center gap-3">
-                      <span className="w-8 h-8 rounded-full border flex items-center justify-center text-sm font-medium">
+                    <span className="flex items-center gap-2 sm:gap-3">
+                      <span className="w-7 h-7 sm:w-8 sm:h-8 rounded-full border flex items-center justify-center text-xs sm:text-sm font-medium flex-shrink-0">
                         {String.fromCharCode(65 + index)}
                       </span>
-                      <span className="flex-1">{option}</span>
+                      <span className="flex-1 text-sm sm:text-base">{option}</span>
                       {showResult && index === question.correctAnswer && (
-                        <CheckCircle className="w-5 h-5 text-green-500" />
+                        <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 text-green-500 flex-shrink-0" />
                       )}
                       {showResult && index === selectedAnswer && index !== question.correctAnswer && (
-                        <XCircle className="w-5 h-5 text-destructive" />
+                        <XCircle className="w-4 h-4 sm:w-5 sm:h-5 text-destructive flex-shrink-0" />
                       )}
                     </span>
                   </Button>
@@ -258,11 +259,11 @@ const Quiz = () => {
           </Card>
 
           {showResult && (
-            <div className="flex justify-between items-center">
-              <p className="text-muted-foreground">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0">
+              <p className="text-sm sm:text-base text-muted-foreground">
                 Score: {score}/{currentQuestion + 1}
               </p>
-              <Button onClick={handleNext}>
+              <Button onClick={handleNext} className="w-full sm:w-auto">
                 {currentQuestion < questions.length - 1 ? "Next Question" : "See Results"}
               </Button>
             </div>
