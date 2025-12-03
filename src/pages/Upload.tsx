@@ -297,35 +297,35 @@ const Upload = () => {
                 Select File
               </p>
               
-              {/* Native label+input approach - most reliable for Android */}
-              <label
-                className={`flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg transition-colors cursor-pointer ${
+              {/* Fully visible file input - required for some Android browsers */}
+              <div
+                className={`flex flex-col items-center justify-center w-full min-h-32 border-2 border-dashed rounded-lg transition-colors p-4 ${
                   hasReachedLimit || uploading
-                    ? 'border-muted bg-muted/20 cursor-not-allowed opacity-50'
-                    : 'border-primary/30 bg-secondary/30 hover:bg-secondary/50 hover:border-primary/50 active:bg-secondary/60'
+                    ? 'border-muted bg-muted/20 opacity-50'
+                    : 'border-primary/30 bg-secondary/30'
                 }`}
               >
+                <UploadIcon className={`w-8 h-8 mb-3 ${hasReachedLimit ? 'text-muted-foreground' : 'text-primary'}`} />
+                <p className="text-sm text-muted-foreground mb-3">
+                  <span className="font-semibold">Tap below to select file</span>
+                </p>
                 <input
                   type="file"
-                  accept="image/*,application/pdf"
+                  accept="image/*,application/pdf,.pdf,.png,.jpg,.jpeg"
                   onChange={handleFileChange}
                   disabled={uploading || hasReachedLimit}
-                  className="absolute w-px h-px overflow-hidden"
-                  style={{ 
-                    opacity: 0.01,
-                    position: 'absolute',
-                    width: '1px',
-                    height: '1px',
-                  }}
+                  className="block w-full text-sm text-muted-foreground
+                    file:mr-4 file:py-2 file:px-4
+                    file:rounded-md file:border-0
+                    file:text-sm file:font-semibold
+                    file:bg-primary file:text-primary-foreground
+                    hover:file:bg-primary/90
+                    file:cursor-pointer cursor-pointer"
                 />
-                <UploadIcon className={`w-8 h-8 mb-2 ${hasReachedLimit ? 'text-muted-foreground' : 'text-primary'}`} />
-                <span className="text-sm text-muted-foreground">
-                  <span className="font-semibold">Tap to upload</span>
-                </span>
-                <span className="text-xs text-muted-foreground mt-1">
+                <p className="text-xs text-muted-foreground mt-2">
                   PDF, PNG, JPEG (max 20MB)
-                </span>
-              </label>
+                </p>
+              </div>
             </div>
 
             {file && (
