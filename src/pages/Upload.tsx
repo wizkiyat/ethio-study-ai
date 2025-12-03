@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -20,7 +20,6 @@ const Upload = () => {
   const [isPremium, setIsPremium] = useState(false);
   const [uploadCount, setUploadCount] = useState(0);
   const [loading, setLoading] = useState(true);
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -294,36 +293,31 @@ const Upload = () => {
           
           <div className="space-y-6">
             <div>
-              <Label className="text-base mb-2 block">
+              <p className="text-base font-medium mb-2">
                 Select File
-              </Label>
+              </p>
               
-              {/* Hidden file input - positioned off-screen for Android compatibility */}
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*,application/pdf,.pdf,.png,.jpg,.jpeg"
-                onChange={handleFileChange}
-                disabled={uploading || hasReachedLimit}
-                style={{
-                  position: 'fixed',
-                  top: '-100%',
-                  left: '-100%',
-                }}
-              />
-              
-              {/* Visible upload button */}
-              <Button
-                type="button"
-                variant="outline"
-                disabled={uploading || hasReachedLimit}
-                onClick={() => fileInputRef.current?.click()}
-                className={`flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg transition-colors ${
+              {/* Native label+input approach - most reliable for Android */}
+              <label
+                className={`flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg transition-colors cursor-pointer ${
                   hasReachedLimit || uploading
-                    ? 'border-muted bg-muted/20 cursor-not-allowed'
+                    ? 'border-muted bg-muted/20 cursor-not-allowed opacity-50'
                     : 'border-primary/30 bg-secondary/30 hover:bg-secondary/50 hover:border-primary/50 active:bg-secondary/60'
                 }`}
               >
+                <input
+                  type="file"
+                  accept="image/*,application/pdf"
+                  onChange={handleFileChange}
+                  disabled={uploading || hasReachedLimit}
+                  className="absolute w-px h-px overflow-hidden"
+                  style={{ 
+                    opacity: 0.01,
+                    position: 'absolute',
+                    width: '1px',
+                    height: '1px',
+                  }}
+                />
                 <UploadIcon className={`w-8 h-8 mb-2 ${hasReachedLimit ? 'text-muted-foreground' : 'text-primary'}`} />
                 <span className="text-sm text-muted-foreground">
                   <span className="font-semibold">Tap to upload</span>
@@ -331,7 +325,7 @@ const Upload = () => {
                 <span className="text-xs text-muted-foreground mt-1">
                   PDF, PNG, JPEG (max 20MB)
                 </span>
-              </Button>
+              </label>
             </div>
 
             {file && (
