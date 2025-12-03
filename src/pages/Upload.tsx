@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -76,7 +76,9 @@ const Upload = () => {
   const hasReachedLimit = !isPremium && uploadCount >= FREE_UPLOAD_LIMIT;
   const remainingUploads = FREE_UPLOAD_LIMIT - uploadCount;
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     console.log('=== FILE INPUT CHANGE EVENT ===');
     console.log('Files object:', files);
@@ -127,7 +129,7 @@ const Upload = () => {
     } else {
       console.log('No files in the input');
     }
-  };
+  }, [toast]);
 
   const handleUpload = async () => {
     if (!file || !user) return;
@@ -314,7 +316,9 @@ const Upload = () => {
                   <span className="font-semibold">Tap below to select file</span>
                 </p>
                 <input
+                  ref={fileInputRef}
                   type="file"
+                  key="file-input-stable"
                   onChange={handleFileChange}
                   disabled={uploading || hasReachedLimit}
                   className="block w-full text-sm text-muted-foreground
