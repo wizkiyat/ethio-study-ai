@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -20,6 +20,7 @@ const Upload = () => {
   const [isPremium, setIsPremium] = useState(false);
   const [uploadCount, setUploadCount] = useState(0);
   const [loading, setLoading] = useState(true);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -293,46 +294,44 @@ const Upload = () => {
           
           <div className="space-y-6">
             <div>
-              <Label htmlFor="file-upload" className="text-base mb-2 block">
+              <Label className="text-base mb-2 block">
                 Select File
               </Label>
-              <div className="relative">
-                <input
-                  id="file-upload"
-                  type="file"
-                  accept="image/*,application/pdf,.pdf"
-                  onChange={handleFileChange}
-                  disabled={uploading || hasReachedLimit}
-                  style={{
-                    position: 'absolute',
-                    width: '100%',
-                    height: '100%',
-                    top: 0,
-                    left: 0,
-                    opacity: 0,
-                    cursor: 'pointer',
-                    zIndex: 10,
-                    fontSize: '16px', // Prevents zoom on iOS
-                  }}
-                />
-                <div
-                  className={`flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg transition-colors ${
-                    hasReachedLimit || uploading
-                      ? 'border-muted bg-muted/20'
-                      : 'border-primary/30 bg-secondary/30 hover:bg-secondary/50 hover:border-primary/50 active:bg-secondary/60'
-                  }`}
-                >
-                  <div className="flex flex-col items-center justify-center pt-5 pb-6 pointer-events-none">
-                    <UploadIcon className={`w-8 h-8 mb-2 ${hasReachedLimit ? 'text-muted-foreground' : 'text-primary'}`} />
-                    <p className="text-sm text-muted-foreground">
-                      <span className="font-semibold">Tap to upload</span>
-                    </p>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      PDF, PNG, JPEG (max 20MB)
-                    </p>
-                  </div>
-                </div>
-              </div>
+              
+              {/* Hidden file input - positioned off-screen for Android compatibility */}
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*,application/pdf,.pdf,.png,.jpg,.jpeg"
+                onChange={handleFileChange}
+                disabled={uploading || hasReachedLimit}
+                style={{
+                  position: 'fixed',
+                  top: '-100%',
+                  left: '-100%',
+                }}
+              />
+              
+              {/* Visible upload button */}
+              <Button
+                type="button"
+                variant="outline"
+                disabled={uploading || hasReachedLimit}
+                onClick={() => fileInputRef.current?.click()}
+                className={`flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg transition-colors ${
+                  hasReachedLimit || uploading
+                    ? 'border-muted bg-muted/20 cursor-not-allowed'
+                    : 'border-primary/30 bg-secondary/30 hover:bg-secondary/50 hover:border-primary/50 active:bg-secondary/60'
+                }`}
+              >
+                <UploadIcon className={`w-8 h-8 mb-2 ${hasReachedLimit ? 'text-muted-foreground' : 'text-primary'}`} />
+                <span className="text-sm text-muted-foreground">
+                  <span className="font-semibold">Tap to upload</span>
+                </span>
+                <span className="text-xs text-muted-foreground mt-1">
+                  PDF, PNG, JPEG (max 20MB)
+                </span>
+              </Button>
             </div>
 
             {file && (
