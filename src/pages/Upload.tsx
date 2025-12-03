@@ -77,11 +77,30 @@ const Upload = () => {
   const remainingUploads = FREE_UPLOAD_LIMIT - uploadCount;
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log('File input changed', e.target.files);
+    
     if (e.target.files && e.target.files[0]) {
       const selectedFile = e.target.files[0];
-      const validTypes = ['application/pdf', 'application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation', 'image/png', 'image/jpeg', 'image/jpg'];
+      console.log('Selected file:', selectedFile.name, selectedFile.type, selectedFile.size);
+      
+      // Check by MIME type OR file extension (Android sometimes has different MIME types)
+      const validMimeTypes = [
+        'application/pdf', 
+        'application/vnd.ms-powerpoint', 
+        'application/vnd.openxmlformats-officedocument.presentationml.presentation', 
+        'image/png', 
+        'image/jpeg', 
+        'image/jpg',
+        'image/webp', // Android sometimes uses this
+      ];
+      
+      const fileName = selectedFile.name.toLowerCase();
+      const validExtensions = ['.pdf', '.png', '.jpg', '.jpeg', '.ppt', '.pptx'];
+      const hasValidExtension = validExtensions.some(ext => fileName.endsWith(ext));
+      const hasValidMimeType = validMimeTypes.includes(selectedFile.type) || selectedFile.type.startsWith('image/');
 
-      if (!validTypes.includes(selectedFile.type)) {
+      if (!hasValidMimeType && !hasValidExtension) {
+        console.log('Invalid file type:', selectedFile.type, fileName);
         toast({
           title: "Invalid File Type",
           description: "Please upload a PDF or image file (PNG, JPEG)",
@@ -99,7 +118,10 @@ const Upload = () => {
         return;
       }
 
+      console.log('File accepted, setting state');
       setFile(selectedFile);
+    } else {
+      console.log('No file selected or files array empty');
     }
   };
 
