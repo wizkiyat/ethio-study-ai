@@ -44,7 +44,11 @@ const Study = () => {
         .single();
 
       if (setError) throw setError;
-      setSet(setData);
+      // Decode URL-encoded characters and replace + with spaces
+      setSet({
+        ...setData,
+        title: decodeURIComponent(setData.title.replace(/\+/g, ' ')),
+      });
 
       // Load flashcards
       const { data: cardsData, error: cardsError } = await supabase

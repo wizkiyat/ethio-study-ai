@@ -47,7 +47,9 @@ const Quiz = () => {
         .single();
 
       if (setError) throw setError;
-      setSetTitle(setData.title);
+      // Decode URL-encoded characters and replace + with spaces
+      const decodedTitle = decodeURIComponent(setData.title.replace(/\+/g, ' '));
+      setSetTitle(decodedTitle);
 
       // Get flashcards
       const { data: flashcards, error: cardsError } = await supabase
