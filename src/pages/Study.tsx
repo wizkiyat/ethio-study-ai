@@ -132,10 +132,10 @@ const Study = () => {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 md:py-12">
         <div className="max-w-3xl mx-auto space-y-4 sm:space-y-6">
           {/* Header */}
-          <div className="text-center">
-            <h1 className="text-2xl sm:text-3xl font-bold mb-2">{set.title}</h1>
+          <div className="text-center overflow-hidden">
+            <h1 className="text-2xl sm:text-3xl font-bold mb-2 break-words">{set.title}</h1>
             {set.description && (
-              <p className="text-sm sm:text-base text-muted-foreground">{set.description}</p>
+              <p className="text-sm sm:text-base text-muted-foreground break-words">{set.description}</p>
             )}
             <p className="text-xs sm:text-sm text-muted-foreground mt-3 sm:mt-4">
               Card {currentIndex + 1} of {flashcards.length}
@@ -154,12 +154,12 @@ const Study = () => {
             >
               {/* Front */}
               <Card
-                className={`absolute inset-0 p-6 sm:p-8 flex flex-col items-center justify-center text-center shadow-[var(--shadow-elevated)] backface-hidden ${
+                className={`absolute inset-0 p-6 sm:p-8 flex flex-col items-center justify-center text-center shadow-[var(--shadow-elevated)] backface-hidden overflow-hidden ${
                   isFlipped ? "invisible" : "visible"
                 }`}
               >
                 <p className="text-xs sm:text-sm text-muted-foreground mb-3 sm:mb-4">QUESTION</p>
-                <p className="text-lg sm:text-xl md:text-2xl font-medium px-4">{currentCard.question}</p>
+                <p className="text-lg sm:text-xl md:text-2xl font-medium px-4 break-words w-full overflow-hidden">{currentCard.question}</p>
                 <p className="text-xs sm:text-sm text-muted-foreground mt-6 sm:mt-8">
                   Click to reveal answer
                 </p>
@@ -167,12 +167,12 @@ const Study = () => {
 
               {/* Back */}
               <Card
-                className={`absolute inset-0 p-6 sm:p-8 flex flex-col items-center justify-center text-center shadow-[var(--shadow-elevated)] rotate-y-180 backface-hidden ${
+                className={`absolute inset-0 p-6 sm:p-8 flex flex-col items-center justify-center text-center shadow-[var(--shadow-elevated)] rotate-y-180 backface-hidden overflow-hidden ${
                   isFlipped ? "visible" : "invisible"
                 }`}
               >
                 <p className="text-xs sm:text-sm text-muted-foreground mb-3 sm:mb-4">ANSWER</p>
-                <p className="text-lg sm:text-xl md:text-2xl font-medium px-4">{currentCard.answer}</p>
+                <p className="text-lg sm:text-xl md:text-2xl font-medium px-4 break-words w-full overflow-hidden">{currentCard.answer}</p>
               </Card>
             </div>
           </div>
