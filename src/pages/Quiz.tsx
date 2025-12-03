@@ -213,18 +213,18 @@ const Quiz = () => {
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         <div className="max-w-2xl mx-auto space-y-4 sm:space-y-6">
-          <div className="space-y-2">
-            <h1 className="text-xl sm:text-2xl font-bold">{setTitle} - Quiz</h1>
+          <div className="space-y-2 overflow-hidden">
+            <h1 className="text-xl sm:text-2xl font-bold break-words">{setTitle} - Quiz</h1>
             <Progress value={progress} className="h-2" />
           </div>
 
-          <Card>
+          <Card className="overflow-hidden">
             <CardHeader>
-              <CardTitle className="text-lg sm:text-xl">{question.question}</CardTitle>
+              <CardTitle className="text-lg sm:text-xl break-words">{question.question}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2 sm:space-y-3">
               {question.options.map((option, index) => {
-                let buttonClass = "w-full justify-start text-left h-auto py-3 sm:py-4 px-3 sm:px-4 whitespace-normal";
+                let buttonClass = "w-full justify-start text-left h-auto py-3 sm:py-4 px-3 sm:px-4 whitespace-normal overflow-hidden";
                 
                 if (showResult) {
                   if (index === question.correctAnswer) {
@@ -242,11 +242,11 @@ const Quiz = () => {
                     onClick={() => handleAnswer(index)}
                     disabled={answered}
                   >
-                    <span className="flex items-start gap-2 sm:gap-3 w-full min-w-0">
+                    <span className="flex items-start gap-2 sm:gap-3 w-full min-w-0 overflow-hidden">
                       <span className="w-7 h-7 sm:w-8 sm:h-8 rounded-full border flex items-center justify-center text-xs sm:text-sm font-medium flex-shrink-0">
                         {String.fromCharCode(65 + index)}
                       </span>
-                      <span className="flex-1 text-sm sm:text-base text-left break-words min-w-0">{option}</span>
+                      <span className="flex-1 text-sm sm:text-base text-left break-words overflow-hidden">{option}</span>
                       {showResult && index === question.correctAnswer && (
                         <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 text-green-500 flex-shrink-0" />
                       )}
