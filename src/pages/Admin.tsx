@@ -422,18 +422,18 @@ const Admin = () => {
             {users.map((profile) => (
               <Card key={profile.id}>
                 <CardContent className="pt-6">
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-2">
-                        <span className="font-bold">{profile.username}</span>
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div className="space-y-1 min-w-0 flex-1">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="font-bold break-all">{profile.username}</span>
                         {profile.is_premium && (
-                          <Badge className="gap-1">
+                          <Badge className="gap-1 flex-shrink-0">
                             <Crown className="w-3 h-3" />
                             Premium
                           </Badge>
                         )}
                       </div>
-                      <p className="text-sm text-muted-foreground">{profile.email}</p>
+                      <p className="text-sm text-muted-foreground break-all">{profile.email}</p>
                       <p className="text-xs text-muted-foreground">
                         Joined: {new Date(profile.created_at).toLocaleDateString()}
                       </p>
@@ -442,6 +442,7 @@ const Admin = () => {
                       variant={profile.is_premium ? "destructive" : "default"}
                       size="sm"
                       onClick={() => togglePremium(profile)}
+                      className="flex-shrink-0 w-full sm:w-auto"
                     >
                       {profile.is_premium ? "Remove Premium" : "Grant Premium"}
                     </Button>
@@ -462,10 +463,10 @@ const Admin = () => {
               uploads.map((upload) => (
                 <Card key={upload.id}>
                   <CardContent className="pt-6">
-                    <div className="flex items-center justify-between">
-                      <div className="space-y-1">
-                        <p className="font-medium">{upload.file_name}</p>
-                        <p className="text-sm text-muted-foreground">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                      <div className="space-y-1 min-w-0 flex-1">
+                        <p className="font-medium break-words">{upload.file_name}</p>
+                        <p className="text-sm text-muted-foreground break-words">
                           Type: {upload.file_type} | Status: {upload.processing_status}
                         </p>
                         <p className="text-xs text-muted-foreground">
@@ -476,6 +477,7 @@ const Admin = () => {
                         variant="destructive"
                         size="sm"
                         onClick={() => deleteUpload(upload.id)}
+                        className="flex-shrink-0 w-full sm:w-auto"
                       >
                         Delete
                       </Button>
