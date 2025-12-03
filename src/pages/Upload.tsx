@@ -77,39 +77,39 @@ const Upload = () => {
   const remainingUploads = FREE_UPLOAD_LIMIT - uploadCount;
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log('File input changed', e.target.files);
+    const files = e.target.files;
+    console.log('=== FILE INPUT CHANGE EVENT ===');
+    console.log('Files object:', files);
+    console.log('Files length:', files?.length);
     
-    if (e.target.files && e.target.files[0]) {
-      const selectedFile = e.target.files[0];
-      console.log('Selected file:', selectedFile.name, selectedFile.type, selectedFile.size);
+    if (files && files.length > 0) {
+      const selectedFile = files[0];
+      console.log('File name:', selectedFile.name);
+      console.log('File type:', selectedFile.type);
+      console.log('File size:', selectedFile.size);
       
-      // Check by MIME type OR file extension (Android sometimes has different MIME types)
-      const validMimeTypes = [
-        'application/pdf', 
-        'application/vnd.ms-powerpoint', 
-        'application/vnd.openxmlformats-officedocument.presentationml.presentation', 
-        'image/png', 
-        'image/jpeg', 
-        'image/jpg',
-        'image/webp', // Android sometimes uses this
-      ];
-      
+      // Very permissive validation - accept almost anything
       const fileName = selectedFile.name.toLowerCase();
-      const validExtensions = ['.pdf', '.png', '.jpg', '.jpeg', '.ppt', '.pptx'];
-      const hasValidExtension = validExtensions.some(ext => fileName.endsWith(ext));
-      const hasValidMimeType = validMimeTypes.includes(selectedFile.type) || selectedFile.type.startsWith('image/');
+      const isImage = selectedFile.type.startsWith('image/') || 
+                      fileName.endsWith('.jpg') || 
+                      fileName.endsWith('.jpeg') || 
+                      fileName.endsWith('.png');
+      const isPdf = selectedFile.type === 'application/pdf' || 
+                    selectedFile.type === '' || // Android sometimes returns empty type
+                    fileName.endsWith('.pdf');
+      const isPpt = fileName.endsWith('.ppt') || fileName.endsWith('.pptx');
 
-      if (!hasValidMimeType && !hasValidExtension) {
-        console.log('Invalid file type:', selectedFile.type, fileName);
+      if (!isImage && !isPdf && !isPpt) {
+        console.log('File rejected - not a valid type');
         toast({
           title: "Invalid File Type",
-          description: "Please upload a PDF or image file (PNG, JPEG)",
+          description: `File type "${selectedFile.type}" not supported. Please upload PDF, PNG, or JPEG.`,
           variant: "destructive",
         });
         return;
       }
 
-      if (selectedFile.size > 20 * 1024 * 1024) { // 20MB limit
+      if (selectedFile.size > 20 * 1024 * 1024) {
         toast({
           title: "File Too Large",
           description: "Please upload a file smaller than 20MB",
@@ -118,10 +118,14 @@ const Upload = () => {
         return;
       }
 
-      console.log('File accepted, setting state');
+      console.log('File accepted! Setting state...');
       setFile(selectedFile);
+      toast({
+        title: "File Selected",
+        description: `${selectedFile.name} ready to upload`,
+      });
     } else {
-      console.log('No file selected or files array empty');
+      console.log('No files in the input');
     }
   };
 
@@ -297,7 +301,7 @@ const Upload = () => {
                 Select File
               </p>
               
-              {/* Fully visible file input - required for some Android browsers */}
+              {/* Fully visible file input - no accept filter for Android compatibility */}
               <div
                 className={`flex flex-col items-center justify-center w-full min-h-32 border-2 border-dashed rounded-lg transition-colors p-4 ${
                   hasReachedLimit || uploading
@@ -311,7 +315,6 @@ const Upload = () => {
                 </p>
                 <input
                   type="file"
-                  accept="image/*,application/pdf,.pdf,.png,.jpg,.jpeg"
                   onChange={handleFileChange}
                   disabled={uploading || hasReachedLimit}
                   className="block w-full text-sm text-muted-foreground
