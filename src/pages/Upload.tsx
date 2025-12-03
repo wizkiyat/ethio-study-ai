@@ -271,37 +271,35 @@ const Upload = () => {
           
           <div className="space-y-6">
             <div>
-              <Label htmlFor="file" className="text-base mb-2 block">
+              <Label htmlFor="file-upload" className="text-base mb-2 block">
                 Select File
               </Label>
-              <div className="relative">
+              <label
+                htmlFor="file-upload"
+                className={`flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg transition-colors cursor-pointer ${
+                  hasReachedLimit || uploading
+                    ? 'border-muted bg-muted/20 cursor-not-allowed'
+                    : 'border-primary/30 bg-secondary/30 hover:bg-secondary/50 hover:border-primary/50 active:bg-secondary/60'
+                }`}
+              >
+                <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                  <UploadIcon className={`w-8 h-8 mb-2 ${hasReachedLimit ? 'text-muted-foreground' : 'text-primary'}`} />
+                  <p className="text-sm text-muted-foreground">
+                    <span className="font-semibold">Tap to upload</span>
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    PDF, PNG, JPEG (max 20MB)
+                  </p>
+                </div>
                 <input
-                  id="file"
+                  id="file-upload"
                   type="file"
-                  accept=".pdf,.png,.jpg,.jpeg,application/pdf,image/png,image/jpeg"
+                  accept="application/pdf,image/png,image/jpeg,image/jpg,.pdf,.png,.jpg,.jpeg"
                   onChange={handleFileChange}
                   disabled={uploading || hasReachedLimit}
-                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-                  style={{ fontSize: '16px' }} // Prevents zoom on iOS
+                  className="sr-only"
                 />
-                <div
-                  className={`flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg transition-colors ${
-                    hasReachedLimit || uploading
-                      ? 'border-muted bg-muted/20'
-                      : 'border-primary/30 bg-secondary/30 hover:bg-secondary/50 hover:border-primary/50'
-                  }`}
-                >
-                  <div className="flex flex-col items-center justify-center pt-5 pb-6 pointer-events-none">
-                    <UploadIcon className={`w-8 h-8 mb-2 ${hasReachedLimit ? 'text-muted-foreground' : 'text-primary'}`} />
-                    <p className="text-sm text-muted-foreground">
-                      <span className="font-semibold">Click to upload</span> or drag and drop
-                    </p>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      PDF, PNG, JPEG (max 20MB)
-                    </p>
-                  </div>
-                </div>
-              </div>
+              </label>
             </div>
 
             {file && (
